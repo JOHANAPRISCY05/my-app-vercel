@@ -23,6 +23,12 @@ class handler(BaseHTTPRequestHandler):
             # Send JSON response
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
+            
+            # Enable CORS
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+
             self.end_headers()
             self.wfile.write(json.dumps(response).encode('utf-8'))
         
@@ -33,3 +39,11 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             error_response = {"error": "Internal Server Error", "message": str(e)}
             self.wfile.write(json.dumps(error_response).encode('utf-8'))
+
+    def do_OPTIONS(self):
+        # Handle preflight requests for CORS
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
